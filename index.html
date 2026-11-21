@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoPulse Atmospheric — Live Weather &amp; Elevation API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Layered GIS & Live Weather-Reactive Background -->
+  <div class="world-map-backdrop" aria-hidden="true"></div>
+  <div class="ambient-glow" id="ambientGlow" aria-hidden="true"></div>
+  <canvas id="weatherBackdropCanvas" aria-hidden="true"></canvas>
+
+  <main class="app-wrapper">
+    <div class="container">
+      <!-- Header -->
+      <header class="app-header">
+        <span class="eyebrow-badge">GeoPulse Spatial • Live Open-Meteo API</span>
+        <h1>Atmospheric &amp; Elevation Monitor</h1>
+        <p class="subtitle">
+          Search any city worldwide to fetch real-time meteorological telemetry and surface elevation.
+        </p>
+      </header>
+
+      <!-- Search Bar Form -->
+      <section class="search-panel" aria-label="City weather search">
+        <form id="searchForm" class="search-form" novalidate>
+          <div class="input-wrap">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              id="cityInput"
+              placeholder="Enter city name (e.g., Lahore, Hunza, London, Tokyo)..."
+              autocomplete="off"
+              aria-label="City name"
+            />
+          </div>
+          <button type="submit" id="searchBtn" class="search-btn">Fetch Live Data</button>
+        </form>
+
+        <!-- Local Storage: Last 3 Searches -->
+        <div class="recent-bar" id="recentBar" hidden>
+          <span class="recent-label">Recent Searches:</span>
+          <div class="recent-chips" id="recentChips"></div>
+        </div>
+      </section>
+
+      <!-- Loading Spinner State -->
+      <div class="status-box loading-box" id="loadingSpinner" role="status" aria-live="polite" hidden>
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Fetching live atmospheric telemetry...</p>
+      </div>
+
+      <!-- Error Message State -->
+      <div class="status-box error-box" id="errorBox" role="alert" hidden>
+        <span class="error-icon" aria-hidden="true">⚠️</span>
+        <div>
+          <strong id="errorTitle">City not found</strong>
+          <p id="errorText">Please check the city spelling and try again.</p>
+        </div>
+      </div>
+
+      <!-- Styled Live API Result Card -->
+      <section class="weather-card" id="weatherCard" aria-live="polite" hidden>
+        <div class="card-header">
+          <div>
+            <div class="location-meta">
+              <span class="live-pill"><span class="live-dot"></span> Live Observation</span>
+              <span class="elevation-pill" id="elevationTag">Elevation: -- m</span>
+            </div>
+            <h2 id="cityName">--</h2>
+            <p class="region-text" id="regionName">--</p>
+          </div>
+
+          <div class="weather-badge-box">
+            <span class="weather-emoji" id="weatherEmoji" aria-hidden="true">⛅</span>
+            <span class="weather-desc" id="weatherDesc">--</span>
+          </div>
+        </div>
+
+        <div class="temp-showcase">
+          <div class="main-temp">
+            <span id="tempValue">--</span><span class="temp-unit">°C</span>
+          </div>
+          <div class="feels-like">
+            Feels like <strong id="feelsLikeValue">--°C</strong>
+            <span class="timezone-tag" id="timezoneTag">Timezone: --</span>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <span class="metric-label">Relative Humidity</span>
+            <strong class="metric-value" id="humidityValue">--%</strong>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Wind Speed</span>
+            <strong class="metric-value" id="windValue">-- km/h</strong>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Surface Pressure</span>
+            <strong class="metric-value" id="pressureValue">-- hPa</strong>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Precipitation</span>
+            <strong class="metric-value" id="precipValue">-- mm</strong>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
